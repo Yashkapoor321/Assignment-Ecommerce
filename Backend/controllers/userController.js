@@ -7,21 +7,60 @@ const signUP = async (req, res) => {
     // console.log(req.body);
     
     try {
-        const { firstName, password, email, phone } = req.body;
-
+        const { firstName, password, email, mobileNo, address} = req.body;
+         // first name validation
+         if (!firstName) {
+            return res.status(400).json({
+                success : false,
+                message : "firstName is required"
+           })
+        }
         if (firstName[0] !== firstName[0].toUpperCase()) {
-            return res.json({
+            return res.status(400).json({
              success : false,
              message : "First Name first letter must be capital letter"
         })
         }
          // Password Validation
-    // const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    // if (!password) {
-    //     return next(new Error('Please Enter a password'));
-    // }else if(!passwordRegex.test(password)){
-    //     return next(new Error('Password must be at least 8 characters long and include one special character, one uppercase letter, and one numeric character.'));
-    // }
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!password) {
+        return res.status(400).json({
+            success : false,
+            message : "Please Enter a password"  
+        })
+    }else if(!passwordRegex.test(password)){
+        return res.status(400).json({
+            success : false,
+            message : "Password must be at least 8 characters long and include one special character, one uppercase letter, and one numeric character."  
+        })
+    }
+
+     // Email Validation
+     if (!email) {
+        return res.status(400).json({
+            success : false,
+            message : "Please enter a email id"
+       })
+    }else if(!email.includes('@')){
+        return res.status(400).json({
+            success : false,
+            message : "Email address must contains @ symbol"
+       })
+    }
+
+       // Phone Number Validation
+       if (!mobileNo) {
+        return res.status(400).json({
+            success : false,
+            message : "Please enter a phone No."
+       })
+    }else if(mobileNo.length !== 10){
+        return res.status(400).json({
+            success : false,
+            message : "Phone number must be 10 digits long."
+       })
+    }
+  
        
        const salt = bcrypt.genSaltSync(10)  
 
